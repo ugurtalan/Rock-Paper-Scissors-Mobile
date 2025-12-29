@@ -3,15 +3,22 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 import kotlin.random.Random
+data class Choice(
+    val name: String,
+    val image: Int
+)
 class MainActivity : ComponentActivity(){
     override fun onCreate(savedInstanceState:Bundle?){
         super.onCreate(savedInstanceState)
@@ -23,9 +30,13 @@ class MainActivity : ComponentActivity(){
 }
 @Composable
 fun RPS(){
-    val choices = arrayOf("Taş","Kagıt","Makas")
-    var userChoice by remember { mutableStateOf("") }
-    var CompChoice by remember { mutableStateOf("") }
+
+    val choices = arrayOf(Choice("Taş",R.drawable.rock),
+        Choice("Kagıt",R.drawable.paper),
+        Choice("Makas",R.drawable.scissors))
+
+    var userChoice by remember { mutableStateOf<Choice?>(null) }
+    var CompChoice by remember { mutableStateOf<Choice?>(null) }
     var result by remember { mutableStateOf("") }
 
 
@@ -41,10 +52,18 @@ fun RPS(){
 
         Row() {
             choices.forEach { choice ->
-                Button(onClick = {userChoice=choice
+                Button(
+                    modifier = Modifier.width(60.dp).height(60.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White
+                    ),
+                    onClick = {userChoice=choice
                                     CompChoice=choices[Random.nextInt(3)]
-                                    result = whoWin(userChoice,CompChoice)}) {
-                    Text(text = choice)
+                    if (userChoice != null && CompChoice != null) {
+                        result = whoWin(userChoice!!, CompChoice!!)
+                    }}) {
+                    Image(painter = painterResource(id = choice.image), contentDescription = choice.name, modifier = Modifier.fillMaxSize())
                 }
             }
 
@@ -52,8 +71,8 @@ fun RPS(){
         }
         Spacer(modifier = Modifier.height(40.dp))
 
-        Text(text="sen : $userChoice")
-        Text(text="Bilgisayar : $CompChoice")
+        Text(text="sen : ${userChoice?.name}")
+        Text(text="Bilgisayar : ${CompChoice?.name}")
 
         Spacer(modifier = Modifier.height(40.dp))
 
@@ -64,19 +83,18 @@ fun RPS(){
     }
 }
 
-fun whoWin(user:String,comp:String):String{
-
+fun whoWin(user:Choice,comp:Choice):String{
     if(user==comp){return "berabere"}
-    if(user=="Kağıt"){
-        if(comp=="Taş"){return "kazandın"}
+    if(user.name=="Kagıt"){
+        if(comp.name=="Taş"){return "kazandın"}
         else return "kaybettin"
     }
-    if(user=="Makas"){
-        if(comp=="Kağıt"){return "kazandın"}
+    if(user.name=="Makas"){
+        if(comp.name=="Kagıt"){return "kazandın"}
         else return "kaybettin"
     }
-    if(user=="Taş"){
-        if(comp=="Makas"){return "kazandın"}
+    if(user.name=="Taş"){
+        if(comp.name=="Makas"){return "kazandın"}
         else return "kaybettin"
     }
     return ""
