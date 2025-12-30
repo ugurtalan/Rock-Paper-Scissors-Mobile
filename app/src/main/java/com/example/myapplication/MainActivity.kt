@@ -12,7 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+
+
 
 import kotlin.random.Random
 data class Choice(
@@ -24,10 +30,53 @@ class MainActivity : ComponentActivity(){
         super.onCreate(savedInstanceState)
 
         setContent {
-            RPS()
+            RpsApp()
         }
     }
 }
+
+
+@Composable
+fun RpsApp(){
+    var started by remember { mutableStateOf(false) }
+
+    if(started){
+        RPS()
+    }
+    else{
+        SplashScreen(
+            onClick = {started = true}
+        )
+    }
+
+}
+@Composable
+fun SplashScreen(onClick: () -> Unit) {
+    LaunchedEffect(Unit) {
+        delay(2300)
+        onClick()
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+
+
+    ) {
+        Text(
+            text = "Uğur Talanın Yazdığı Taş Kağıt Makas uygulmasına hoşgeldiniz!",
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+
+        )
+    }
+
+}
+
 @Composable
 fun RPS(){
 
@@ -46,7 +95,14 @@ fun RPS(){
         verticalArrangement = Arrangement.Center
 
     ) {
-        Text(text = "taş-kağıt-makas")
+        Text(
+            text = "Taş • Kağıt • Makas",
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -71,13 +127,36 @@ fun RPS(){
         }
         Spacer(modifier = Modifier.height(40.dp))
 
-        Text(text= "Sen : ${userChoice?.name ?: "Seçim yapılmadı"}" )
+        Column(
+            modifier = Modifier.padding(top = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
 
-        Text(text="Bilgisayar : ${CompChoice?.name ?: "Seçim yapılmadı"}")
+            Text(
+                text= "Sen : ${userChoice?.name ?: "Seçim yapılmadı"}",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Text(
+                text="Bilgisayar : ${CompChoice?.name ?: "Seçim yapılmadı"}",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Text(
+                text="sonuç  : $result",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.primary
+                )
+        }
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Text(text="sonuç  : $result")
+
 
 
 
