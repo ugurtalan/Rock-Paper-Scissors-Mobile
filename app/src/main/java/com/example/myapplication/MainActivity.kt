@@ -71,8 +71,9 @@ fun RPS(){
         }
         Spacer(modifier = Modifier.height(40.dp))
 
-        Text(text="sen : ${userChoice?.name}")
-        Text(text="Bilgisayar : ${CompChoice?.name}")
+        Text(text= "Sen : ${userChoice?.name ?: "Seçim yapılmadı"}" )
+
+        Text(text="Bilgisayar : ${CompChoice?.name ?: "Seçim yapılmadı"}")
 
         Spacer(modifier = Modifier.height(40.dp))
 
