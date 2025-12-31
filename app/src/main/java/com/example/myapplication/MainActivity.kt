@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
@@ -25,6 +26,15 @@ data class Choice(
     val name: String,
     val image: Int
 )
+
+data class GameState(
+    val round : Int = 1,
+    val userScore : Int = 0,
+    val computerScore: Int =0,
+    val Finished:Boolean = false,
+    val whoWin:String = ""
+)
+
 class MainActivity : ComponentActivity(){
     override fun onCreate(savedInstanceState:Bundle?){
         super.onCreate(savedInstanceState)
@@ -39,9 +49,14 @@ class MainActivity : ComponentActivity(){
 @Composable
 fun RpsApp(){
     var started by remember { mutableStateOf(false) }
-
+    var state by remember { mutableStateOf(GameState()) }
     if(started){
-        RPS()
+        if(state.Finished){
+            ResultScreen(state = state , onStateChanged = {newState -> state = GameState()})
+        }
+        else{
+            RPS(state=state, onStateChanged = {newState->state=newState})
+        }
     }
     else{
         SplashScreen(
@@ -78,15 +93,13 @@ fun SplashScreen(onClick: () -> Unit) {
 }
 
 @Composable
-fun RPS(){
+fun RPS(state: GameState , onStateChanged : (GameState)-> Unit){
 
     val choices = arrayOf(Choice("Taş",R.drawable.rock),
         Choice("Kagıt",R.drawable.paper),
         Choice("Makas",R.drawable.scissors))
-
     var userChoice by remember { mutableStateOf<Choice?>(null) }
     var CompChoice by remember { mutableStateOf<Choice?>(null) }
-    var result by remember { mutableStateOf("") }
 
 
     Column (
@@ -115,10 +128,13 @@ fun RPS(){
                         containerColor = Color.White
                     ),
                     onClick = {userChoice=choice
-                                    CompChoice=choices[Random.nextInt(3)]
-                    if (userChoice != null && CompChoice != null) {
-                        result = whoWin(userChoice!!, CompChoice!!)
-                    }}) {
+                        val compChoice  = choices[Random.nextInt(3)]
+                        CompChoice = compChoice
+                       val  newState = play(
+                           state,choice,choices,compChoice
+                           )
+                        onStateChanged(newState)
+                    }) {
                     Image(painter = painterResource(id = choice.image), contentDescription = choice.name, modifier = Modifier.fillMaxSize())
                 }
             }
@@ -147,11 +163,23 @@ fun RPS(){
             )
 
             Text(
-                text="sonuç  : $result",
+                text="sonuç  : ${state.whoWin}",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.primary
                 )
+            Text(
+                text="Sen  : ${state.userScore}",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text="Bilgisayar  : ${state.computerScore}",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -163,6 +191,95 @@ fun RPS(){
     }
 }
 
+@Preview(showBackground = true, name = "result screen")
+@Composable
+fun ResultScreen(state: GameState = GameState(), onStateChanged: (GameState) -> Unit = {}){
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        Text(
+            text = "Computer : ${state.computerScore}",
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Text(
+            text = "Sen : ${state.userScore}",
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Text(
+            text = "${state.whoWin} Kazandı!!",
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        Button(
+            modifier = Modifier.width(70.dp).height(70.dp),
+            contentPadding = PaddingValues(0.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.DarkGray
+            ),
+            onClick = {onStateChanged(state)}) {
+            Text(text = "Yeniden Oyna",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
+
+            )
+        }
+    }
+
+
+}
+
+
+fun play(
+    gameState : GameState ,userChoice: Choice  , choices : Array<Choice>,compChoice: Choice
+): GameState{
+
+    val result = whoWin(userChoice,compChoice)
+
+    val newUserScore =if(result=="kazandın")   gameState.userScore+1 else gameState.userScore
+    val newCompScore = if(result=="kaybettin") gameState.computerScore+1 else gameState.computerScore
+
+    val roundCount = if(result!="berabere") gameState.round +1 else gameState.round
+    var finished = roundCount>5
+
+    var winner = ""
+
+    if(finished || newUserScore == 3||newCompScore == 3){
+        winner = if(newUserScore>newCompScore) "user" else "comp"
+        finished=true
+    }
+
+
+    return GameState(
+        round= roundCount,
+        userScore = newUserScore,
+        computerScore = newCompScore,
+        Finished = finished,
+        whoWin= winner
+    )
+
+
+
+
+
+
+}
 fun whoWin(user:Choice,comp:Choice):String{
     if(user==comp){return "berabere"}
     if(user.name=="Kagıt"){
