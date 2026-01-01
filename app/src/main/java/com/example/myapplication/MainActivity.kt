@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -162,12 +164,7 @@ fun RPS(state: GameState , onStateChanged : (GameState)-> Unit){
                 color = MaterialTheme.colorScheme.primary
             )
 
-            Text(
-                text="sonuç  : ${state.whoWin}",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.primary
-                )
+
             Text(
                 text="Sen  : ${state.userScore}",
                 fontSize = 18.sp,
@@ -196,59 +193,92 @@ fun RPS(state: GameState , onStateChanged : (GameState)-> Unit){
 fun ResultScreen(state: GameState = GameState(), onStateChanged: (GameState) -> Unit = {}){
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(16.dp).border(width = 2.dp,color=Color.Black),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.CenterVertically)
     ) {
 
-        Text(
-            text = "Computer : ${state.computerScore}",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
 
-        Text(
-            text = "Sen : ${state.userScore}",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
 
         Text(
             text = "${state.whoWin} Kazandı!!",
             fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.ExtraBold,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
-        Button(
-            modifier = Modifier.width(70.dp).height(70.dp),
-            contentPadding = PaddingValues(0.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.DarkGray
-            ),
-            onClick = {onStateChanged(state)}) {
-            Text(text = "Yeniden Oyna",
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
 
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(6.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Computer",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.Gray
+                )
+                Text(
+                    text = state.computerScore.toString(),
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(6.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Sen",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.Gray
+                )
+                Text(
+                    text = state.userScore.toString(),
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            shape = RoundedCornerShape(16.dp),
+            onClick = { onStateChanged(state) }
+        ) {
+            Text(
+                text = "Yeniden Oyna",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
             )
         }
+
     }
 
 
 }
 
 
-fun play(
-    gameState : GameState ,userChoice: Choice  , choices : Array<Choice>,compChoice: Choice
-): GameState{
+fun play(gameState : GameState ,userChoice: Choice  , choices : Array<Choice>,compChoice: Choice): GameState{
 
     val result = whoWin(userChoice,compChoice)
 
