@@ -240,7 +240,7 @@ fun ResultScreen(state: GameState = GameState(), onStateChanged: (GameState) -> 
 
 
         Text(
-            text = "${state.whoWin} Kazandı!!",
+            text = if (state.whoWin == "user") "Sen kazandın!!" else "Bilgisayar kazandı!!",
             fontSize = 30.sp,
             fontWeight = FontWeight.ExtraBold,
             color = MaterialTheme.colorScheme.primary,
