@@ -232,7 +232,7 @@ fun RPS(state: GameState= GameState(), onStateChanged : (GameState)-> Unit = {})
 fun ResultScreen(state: GameState = GameState(), onStateChanged: (GameState) -> Unit = {}){
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp).border(width = 2.dp,color=Color.Black),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.CenterVertically)
     ) {
