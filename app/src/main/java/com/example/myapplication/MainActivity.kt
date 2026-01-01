@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -93,9 +94,9 @@ fun SplashScreen(onClick: () -> Unit) {
     }
 
 }
-
+@Preview(showBackground = true, name = "game Screen")
 @Composable
-fun RPS(state: GameState , onStateChanged : (GameState)-> Unit){
+fun RPS(state: GameState= GameState(), onStateChanged : (GameState)-> Unit = {}){
 
     val choices = arrayOf(Choice("Taş",R.drawable.rock),
         Choice("Kagıt",R.drawable.paper),
@@ -110,14 +111,20 @@ fun RPS(state: GameState , onStateChanged : (GameState)-> Unit){
         verticalArrangement = Arrangement.Center
 
     ) {
-        Text(
-            text = "Taş • Kağıt • Makas",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
+        Card(
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
+            elevation = CardDefaults.cardElevation(6.dp),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text(
+                text = "Taş • Kağıt • Makas",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                textAlign = TextAlign.Center
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -143,40 +150,72 @@ fun RPS(state: GameState , onStateChanged : (GameState)-> Unit){
 
 
         }
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Column(
-            modifier = Modifier.padding(top = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-            Text(
-                text= "Sen : ${userChoice?.name ?: "Seçim yapılmadı"}",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                elevation = CardDefaults.cardElevation(6.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text= "Sen : ${userChoice?.name ?: "Seçim yapılmadı"}",
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
 
-            Text(
-                text="Bilgisayar : ${CompChoice?.name ?: "Seçim yapılmadı"}",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                elevation = CardDefaults.cardElevation(6.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text= "Bilgisayar : ${CompChoice?.name ?: "Seçim yapılmadı"}",
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
 
 
-            Text(
-                text="Sen  : ${state.userScore}",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text="Bilgisayar  : ${state.computerScore}",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.primary
-            )
+
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                elevation = CardDefaults.cardElevation(6.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text= "Sen : ${state.userScore}",
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+
+
+
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                elevation = CardDefaults.cardElevation(6.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text= "Sen : ${state.computerScore}",
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+
         }
 
         Spacer(modifier = Modifier.height(40.dp))
