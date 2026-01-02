@@ -81,6 +81,7 @@ fun GameScreen(navController: NavController,gameViewModel: GameViewModel){
                         containerColor = Color.White
                     ),
                     onClick = {userChoice=choice
+
                         val compChoice  = choices[Random.nextInt(3)]
                         CompChoice = compChoice
                         play(gameViewModel,choice,choices,compChoice)

@@ -48,8 +48,8 @@ fun play(gameViewModel: GameViewModel, userChoice: Choice, choices : Array<Choic
 
     val result = whoWin(userChoice,compChoice)
 
-    val newUserScore =if(result=="kazandın")   gameViewModel.gameState.value.userScore+1 else gameViewModel.gameState.value.userScore
-    val newCompScore = if(result=="kaybettin") gameViewModel.gameState.value.computerScore+1 else gameViewModel.gameState.value.computerScore
+    val newUserScore =if(result=="kazandın"&&!gameViewModel.gameState.value.Finished)   gameViewModel.gameState.value.userScore+1 else gameViewModel.gameState.value.userScore
+    val newCompScore = if(result=="kaybettin"&&!gameViewModel.gameState.value.Finished) gameViewModel.gameState.value.computerScore+1 else gameViewModel.gameState.value.computerScore
 
     val roundCount = if(result!="berabere") gameViewModel.gameState.value.round +1 else gameViewModel.gameState.value.round
 
